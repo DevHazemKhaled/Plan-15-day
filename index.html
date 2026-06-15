@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShiftDev - 15 Days Roadmap Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --cyan-neon: #00f2fe;
+            --fuchsia-neon: #f355da;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(145deg, #111827, #0b0f19);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        }
+
+        header img {
+            max-height: 80px;
+            margin-bottom: 15px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: var(--cyan-neon);
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Dashboard Layout */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        /* Sidebar Days Navigation */
+        .sidebar {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            font-size: 16px;
+            color: var(--fuchsia-neon);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .day-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            background: none;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: right;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .day-btn:hover {
+            background-color: rgba(0, 242, 254, 0.05);
+            color: var(--cyan-neon);
+        }
+
+        .day-btn.active {
+            background: linear-gradient(90deg, rgba(0, 242, 254, 0.1), transparent);
+            border-right: 4px solid var(--cyan-neon);
+            color: var(--cyan-neon);
+            font-weight: bold;
+        }
+
+        .day-btn.completed-day {
+            border-left: 4px solid #10b981;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #374151;
+            color: var(--text-main);
+        }
+
+        .badge.pending {
+            background-color: #ef4444;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Pending Alert Box */
+        .pending-alert {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 15px;
+            display: none;
+        }
+
+        .pending-alert h4 {
+            color: #ef4444;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pending-list-items {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .pending-list-items li {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #fca5a5;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            color: var(--cyan-neon);
+        }
+
+        .post-title-box {
+            background-color: #1f2937;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--fuchsia-neon);
+        }
+
+        .post-title-box strong {
+            color: var(--fuchsia-neon);
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .prompt-container {
+            position: relative;
+            background-color: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .prompt-container strong {
+            color: var(--cyan-neon);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .prompt-text {
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #e5e7eb;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #1f2937;
+            border: 1px solid var(--border-color);
+            color: var(--cyan-neon);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--cyan-neon);
+            color: var(--bg-color);
+        }
+
+        /* Platforms Checklist Grid */
+        .platforms-title {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .platform-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1f2937;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .platform-item.checked {
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+
+        .platform-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .platform-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        /* Navigation Buttons */
+        .nav-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 6px;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background-color: #374151;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .btn-primary {
+            background-color: var(--fuchsia-neon);
+            color: white;
+            box-shadow: 0 0 8px rgba(243, 85, 218, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #d946ef;
+        }
+
+        /* Footer Info */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        footer strong {
+            color: var(--cyan-neon);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <img src="Logo.png" alt="ShiftDev Logo" onerror="this.style.display='none';">
+        <h1>لوحة تحكم خطة الـ 15 يوم | ShiftDev</h1>
+        <p>التزام يومي ونشر ذكي بدون فوضى</p>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h3>أيام الخطة</h3>
+            <div id="days-nav-list"></div>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="main-content">
+            
+            <!-- Pending Tasks Alert Box -->
+            <div class="pending-alert" id="pending-box">
+                <h4>⚠️ أيام متبقية لم تنشر بالكامل:</h4>
+                <ul class="pending-list-items" id="pending-list"></ul>
+            </div>
+
+            <!-- Active Post Content Card -->
+            <div class="card" id="active-card">
+                <div class="card-header">
+                    <h2 id="display-day-title">اليوم الأول</h2>
+                    <span class="badge" id="display-day-status">جاري العمل</span>
+                </div>
+
+                <div class="post-title-box">
+                    <strong>العنوان المقترح للبوست:</strong>
+                    <p id="display-post-title">تحميل البيانات...</p>
+                </div>
+
+                <div class="prompt-container">
+                    <button class="copy-btn" onclick="copyPrompt()">نسخ النص</button>
+                    <strong>محتوى البوست (جاهز للنشر بلهجة عامية مصرية):</strong>
+                    <div class="prompt-text" id="display-post-content">تحميل...</div>
+                </div>
+
+                <div class="platforms-section">
+                    <p class="platforms-title">🎯 علّم على المنصات اللي نشرت عليها الفكرة دي فعلياً:</p>
+                    <div class="platforms-grid">
+                        <div class="platform-item" id="item-fb">
+                            <span class="platform-label">🔵 فيسبوك (Facebook)</span>
+                            <input type="checkbox" class="platform-checkbox" id="chk-fb" onclick="togglePlatform('fb')">
+                        </div>
+                        <div class="platform-item" id="item-li">
+                            <span class="platform-label">💼 لينكد إن (LinkedIn)</span>
+                            <input type="checkbox" class="platform-checkbox" id="chk-li" onclick="togglePlatform('li')">
+                        </div>
+                        <div class="platform-item" id="item-ig">
+                            <span class="platform-label">📸 إنستغرام (Instagram)</span>
+                            <input type="checkbox" class="platform-checkbox" id="chk-ig" onclick="togglePlatform('ig')">
+                        </div>
+                        <div class="platform-item" id="item-yt">
+                            <span class="platform-label">🔴 يوتيوب (YouTube Shorts)</span>
+                            <input type="checkbox" class="platform-checkbox" id="chk-yt" onclick="togglePlatform('yt')">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="action-btn btn-secondary" onclick="navigateDay(-1)">اليوم السابق</button>
+                    <button class="action-btn btn-primary" onclick="navigateDay(1)">اليوم التالي</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Identity Box -->
+    <footer>
+        تطوير وتصميم وإشراف: <strong>المبرمج حازم خالد</strong><br>
+        اليوزر الموحد: <code>DeveloperHazemAbdalkhaliq</code> | الإيميل: <code>dev.hazem.abdalkhaliq@gmail.com</code><br>
+        رقم الموبايل: <strong>+201002406273</strong>
+    </footer>
+
+    <script>
+        // 15 Days High-Impact Egyptian Arabic Tech Content Roadmap
+        const roadmapData = {
+            1: {
+                title: "المشكلة اللي بتخلي الأبلكيشن بتاعك 'يغرز' في السوق!",
+                content: "بنشوف أفكار لـ ستارت أبس وشركات جامدة جداً، بس أول ما الأبلكيشن ينزل السوق تلاقيه 'غرز' والناس اشتكت من البطء وقفلت منه. الفكرة مش إن السيرفر ضعيف، الفكرة في الـ Architecture والـ Database من الأول! في ShiftDev بنهتم بتأسيس الكود صح عشان يشيل ملايين المستخدمين من أول يوم بدون ما يهنج. قولولي إيه أكتر مشقبة قابلتكم في أبلكيشن كنتوا بتستخدموه؟"
+            },
+            2: {
+                title: "ليه الـ UI الحلو لوحده مش كفاية؟",
+                content: "ساعات العميل ييجي مبهور بألوان وتصميم أبلكيشن، بس لما ييجي يجرب يدوس على زرار عشان يشتري يلاقي اللفة طويلة ومعقدة. التصميم مش بس شكل، التصميم 'هو شغال إزاي' (UX). لو موقعك أو تطبيقك مش بيسهل على الزبون يوصل لهدفه في 3 خطوات.. يبقى بتخسر فلوس. إحنا في ShiftDev بنصمم تجربة تريح الزبون وتزود مبيعاتك."
+            },
+            3: {
+                title: "سر الخلطة السرية: الـ Backend النضيف بيوفر كام؟",
+                content: "كتير فاكرين إن البرمجة كب كود وخلاص. بس الحقيقة إن الـ Backend المبني بذكاء بيوفر على صاحب الشغل تمن سيرفرات وهيديك سرعة صاروخية. لما بنشتغل على مشروع، بنحسب حساب الـ Optimization لكل Query وكل API عشان الأداء يبهرك والتكلفة تكون في الأرض. مين هنا عانى من فواتير سيرفرات عالية؟"
+            },
+            4: {
+                title: "مطور الويب vs مطور الموبايل: تختار إيه لمشروعك؟",
+                content: "سؤال المليون جنيه: أعمل لمشروعي موقع ويب ولا أبلكيشن موبايل؟ الإجابة بتعتمد على طبيعة زبونك! لو الخدمة محتاجة استخدام يومي وسريع (زي التوصيل أو الدفع) يبقى أبلكيشن. لو محتاجة تصفح وقراءة وعرض خدمات.. يبقى موقع ويب متوافق مع الموبايل هو البداية الصح والموفرة. لو محتار، ابعتلي فكرة مشروعك وهقولك تبدأ بإيه فوراً."
+            },
+            5: {
+                title: "وراء كواليس كود نضيف: إزاي بنسلم مشروع ميتعبكش بعدين؟",
+                content: "أسوأ حاجة ممكن تقابل صاحب مشروع، إنه يستلم الكود من مبرمج، وييجي مبرمج تاني بعده يقوله: 'الكود ده لازم يترمي ويتبني من جديد!'.. في ShiftDev بنكتب كود منظم وموثق (Clean Code) بحيث لو مشروعك كبر وحبيت تضيف تيم جديد، يستلموا الشغل ويطوروا عليه بسلاسة من غير تضيع وقت. الأمانة في التفاصيل دي هي اللي بتعيّش البيزنس."
+            },
+            6: {
+                title: "الـ AI هيقعدنا في البيت؟ (كلام مبرمجين بجد)",
+                content: "كل يومين تطلع إشاعة إن المبرمجين هيقعدوا في البيت والـ AI هيعمل كل حاجة. الحقيقة؟ الـ AI أداة سريعة في إيد المبرمج الشاطر تخليه ينجز مشروعه في نص الوقت، بس عمره ما هيفهم بيزنس العميل ولا هيعرف يحل مشاكل الـ Logic المعقدة اللي محتاجة حس إنساني. إحنا بنطوع الذكاء الاصطناعي عشان نسلمك مشروعك بأعلى كفاءة وأسرع وقت، مش بنخاف منه!"
+            },
+            7: {
+                title: "أكبر مقلب بتشربه الشركات الناشئة في الـ MVP!",
+                content: "الـ MVP أو النسخة الأولية من مشروعك مش معناه إنك تنزل بمنتج مليان أخطاء وبايظ، معناه إنك تنزل بأهم ميزة (Core Feature) شغالة بنسبة 100% وبأعلى جودة. ركز في ميزة واحدة تنجح، بدل ما تعمل 20 ميزة بايزين والناس تقفل من براندك من أول يوم. دي نصيحة ShiftDev لأي حد بيبدأ بيزنس تقني."
+            },
+            8: {
+                title: "الأمان التقني: تفتكر بيانات عملائك في أمان؟",
+                content: "اختراق واحد لموقعك كفيل يقضي على سمعة شركتك اللي بنيتها في سنين. حماية البيانات وتأمين الـ Database مش رفاهية دي أساسيات. في كل خطوة برمجية بنعملها، بنقفل الثغرات وبنستخدم بروتوكولات أمان صارمة عشان بياناتك وبيانات عملائك تكون في حتة أمينة. متسترخصش في أمان بيزنسك."
+            },
+            9: {
+                title: "قوانين السرعة في 2026: لو موقعك بياخد أكتر من ثانيتين.. باي باي!",
+                content: "دراسات كتير أكدت إن المستخدم لو دخل موقع ولقاه بيلف أكتر من ثانيتين بيكنسل ويخرج ويدخل لمنافسك. السرعة هي العامل الأول في الحفاظ على الزبون (Retention). احنا بنعمل تيكنيكال أوديت وبنضغط الصور وبنحسن الكود لحد ما الموقع يفتح في رمشة عين. اختبر سرعة موقعك دلوقتي وقولي بياخد كام ثانية؟"
+            },
+            10: {
+                title: "من فكرة على منديل لـ تطبيق شغال في السوق: رحلتنا معاك",
+                content: "مش كل اللي بييجي يطلب مشروع بيكون فاهم تقنيات، وده طبيعي جداً. دورنا في ShiftDev إننا نقعد معاك، نسمع فكرتك، ونترجمها لـ خطة عمل واضحة وتصميمات بتشوفها وتجربها بنفسك قبل ما نكتب سطر كود واحد. بنكون شركاء نجاح خطوة بخطوة مش مجرد مبرمجين بنسلم كود ونمشي."
+            },
+            11: {
+                title: "ليه الجاهز رخيص والمفصل غالي؟ (الـ Custom Software)",
+                content: "ممكن تشتري سكريبت جاهز ورخيص، بس هتلاقي نفسك محبوس جوه قوالب مش شبه البيزنس بتاعك، وتعديله هيكلفك أضعاف تمنه. البرمجيات الخاصة (Custom Web & App Development) بتتبني على مقاس تفاصيل شركتك بالظبط، مرنة وبتكبر معاك وبتديك تحكم كامل. استثمر صح من الأول."
+            },
+            12: {
+                title: "إزاي الأبلكيشن بتاعك يقدر يشتغل 'أوفلاين' بدون إنترنت؟",
+                content: "تخيل العميل شغال على الأبلكيشن بتاعك والنت قطع، فكل الداتا تضيع؟ حركة تقفل أي حد! التقنيات الحديثة بتسمح لنا نعمل تطبيقات بتخزن البيانات محلياً على جهاز المستخدم (Offline-first) وأول ما النت يرجع ترفع الداتا للسيرفر لوحدها. ميزة زي دي بتنقل تطبيقك لحتة تانية تماماً من الاحترافية."
+            },
+            13: {
+                title: "الأخطاء السبعة القاتلة في إدارة المشاريع التقنية",
+                content: "تأخير التسليم، تغيير المتطلبات كل شوية، عدم وضوح الرؤية.. دي أشهر أسباب فشل المشاريع. في ShiftDev شغالين بمنهجية الـ Agile، يعني بتشوف تطور بمشروعك كل أسبوع في 'سباقات' (Sprints) واضحة، عشان تكون مطمن وشايف فلوسك ووقتك بيروحوا فين بالظبط والنتيجة تطلع زي ما حلمت."
+            },
+            14: {
+                title: "الـ Cloud Computing: امتى تنقل شركتك على السحاب؟",
+                content: "لو عندك سيستم شغال محلي في الشركة وخايف الهارد يبوظ أو البيانات تضيع، يبقى النقل للـ Cloud بقا فرض عليك. الـ Cloud بيديك أمان، إمكانية وصول من أي مكان في العالم، ونسخ احتياطي تلقائي لكل ملفاتك. تواصل معنا في ShiftDev وهنساعدك تنقل السيستم بتاعك بأمان وبدون أي توقف للشغل."
+            },
+            15: {
+                title: "قفلنا الـ 15 يوم: إيه خطوتك الجاية؟",
+                content: "على مدار 15 يوم اتكلمنا عن الأمان، السرعة، تجربة المستخدم، وتأسيس البيزنس التقني صح. الأفكار كتير بس اللي بينجح هو اللي بيبدأ ينفذ فعلياً. لو عندك فكرة ومأجلها، النهاردة هو اليوم المناسب عشان تاخد الخطوة. ابعتلنا رسالة في ShiftDev، وخلينا نبدأ نبني مستقبلك التقني سوا. شكراً لكل اللي تابعونا!"
+            }
+        };
+
+        let currentDay = 1;
+        let userProgress = {};
+
+        // Load Progress from LocalStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('shiftdev_roadmap_progress');
+            if (saved) {
+                userProgress = JSON.parse(saved);
+            } else {
+                // Initialize empty progress for 15 days
+                for (let i = 1; i <= 15; i++) {
+                    userProgress[i] = { fb: false, li: false, ig: false, yt: false };
+                }
+                saveProgress();
+            }
+            
+            // Check for actual date rollover to flag yesterday's pending items
+            const todayStr = new Date().toDateString();
+            const lastActiveDate = localStorage.getItem('shiftdev_last_date');
+            if (lastActiveDate && lastActiveDate !== todayStr) {
+                // System rolled over to a new day, we keep the data but could trigger logic if tracking active days
+            }
+            localStorage.setItem('shiftdev_last_date', todayStr);
+        }
+
+        function saveProgress() {
+            localStorage.setItem('shiftdev_roadmap_progress', JSON.stringify(userProgress));
+            renderSidebar();
+            updatePendingBox();
+        }
+
+        // Render Days Sidebar Nav
+        function renderSidebar() {
+            const navList = document.getElementById('days-nav-list');
+            navList.innerHTML = '';
+            
+            for (let i = 1; i <= 15; i++) {
+                const btn = document.createElement('button');
+                btn.className = `day-btn ${i === currentDay ? 'active' : ''}`;
+                
+                // Check status
+                const dayData = userProgress[i];
+                const totalPosted = Object.values(dayData).filter(Boolean).length;
+                
+                let statusBadge = `<span class="badge">0/4</span>`;
+                if (totalPosted === 4) {
+                    statusBadge = `<span class="badge" style="background-color: #10b981;">تم بنجاح</span>`;
+                    btn.classList.add('completed-day');
+                } else if (totalPosted > 0) {
+                    statusBadge = `<span class="badge" style="background-color: #f59e0b;">${totalPosted}/4</span>`;
+                } else if (i < currentDay && totalPosted === 0) {
+                    statusBadge = `<span class="badge pending">فاتك</span>`;
+                }
+
+                btn.innerHTML = `<span>اليوم ${i}</span> ${statusBadge}`;
+                btn.onclick = () => selectDay(i);
+                navList.appendChild(btn);
+            }
+        }
+
+        // Show/Hide Pending Tasks Alert Box
+        function updatePendingBox() {
+            const pendingList = document.getElementById('pending-list');
+            const pendingBox = document.getElementById('pending-box');
+            pendingList.innerHTML = '';
+            let hasPending = false;
+
+            // Check previous days relative to current active day
+            for (let i = 1; i < currentDay; i++) {
+                const totalPosted = Object.values(userProgress[i]).filter(Boolean).length;
+                if (totalPosted < 4) {
+                    hasPending = true;
+                    const li = document.createElement('li');
+                    li.innerText = `اليوم رقم ${i} - لسه منشرتش في كل المنصات المطلوبين (${totalPosted}/4)`;
+                    li.onclick = () => selectDay(i);
+                    pendingList.appendChild(li);
+                }
+            }
+
+            pendingBox.style.display = hasPending ? 'block' : 'none';
+        }
+
+        // Select and display specific Day
+        function selectDay(dayNum) {
+            currentDay = dayNum;
+            const data = roadmapData[dayNum];
+            
+            document.getElementById('display-day-title').innerText = `اليوم رقم ${dayNum}`;
+            document.getElementById('display-post-title').innerText = data.title;
+            document.getElementById('display-post-content').innerText = data.content;
+
+            // Load Checkboxes
+            const dayProgress = userProgress[dayNum];
+            document.getElementById('chk-fb').checked = dayProgress.fb;
+            document.getElementById('chk-li').checked = dayProgress.li;
+            document.getElementById('chk-ig').checked = dayProgress.ig;
+            document.getElementById('chk-yt').checked = dayProgress.yt;
+
+            // Style Checked classes
+            updateCheckboxUI('fb', dayProgress.fb);
+            updateCheckboxUI('li', dayProgress.li);
+            updateCheckboxUI('ig', dayProgress.ig);
+            updateCheckboxUI('yt', dayProgress.yt);
+
+            // Update Day Badge status
+            const totalPosted = Object.values(dayProgress).filter(Boolean).length;
+            const statusBadge = document.getElementById('display-day-status');
+            if (totalPosted === 4) {
+                statusBadge.innerText = "مكتمل تماماً";
+                statusBadge.style.backgroundColor = "#10b981";
+            } else if (totalPosted > 0) {
+                statusBadge.innerText = `قيد النشر (${totalPosted}/4)`;
+                statusBadge.style.backgroundColor = "#f59e0b";
+            } else {
+                statusBadge.innerText = "لم يبدأ بعد";
+                statusBadge.style.backgroundColor = "#374151";
+            }
+
+            // Sync active states on list
+            renderSidebar();
+        }
+
+        function togglePlatform(platform) {
+            const isChecked = document.getElementById(`chk-${platform}`).checked;
+            userProgress[currentDay][platform] = isChecked;
+            updateCheckboxUI(platform, isChecked);
+            saveProgress();
+            selectDay(currentDay); // refresh badge status
+        }
+
+        function updateCheckboxUI(platform, isChecked) {
+            const item = document.getElementById(`item-${platform}`);
+            if (isChecked) {
+                item.classList.add('checked');
+            } else {
+                item.classList.remove('checked');
+            }
+        }
+
+        function navigateDay(direction) {
+            let targetDay = currentDay + direction;
+            if (targetDay >= 1 && targetDay <= 15) {
+                selectDay(targetDay);
+            }
+        }
+
+        function copyPrompt() {
+            const contentText = document.getElementById('display-post-content').innerText;
+            navigator.clipboard.writeText(contentText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerText = 'تم النسخ! ✓';
+                btn.style.backgroundColor = '#10b981';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerText = 'نسخ النص';
+                    btn.style.backgroundColor = '#1f2937';
+                    btn.style.color = 'var(--cyan-neon)';
+                }, 2000);
+            });
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            loadProgress();
+            selectDay(1);
+        };
+    </script>
+</body>
+</html>
